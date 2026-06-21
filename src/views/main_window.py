@@ -758,7 +758,12 @@ class MainWindow(QMainWindow):
     
     def _on_stats(self):
         """打开统计"""
-        QMessageBox.information(self, "提示", "统计功能开发中...")
+        from .stats_window import StatsWindow
+        if self.scheduler:
+            dialog = StatsWindow(self.scheduler, self)
+            dialog.exec_()
+        else:
+            QMessageBox.information(self, "提示", "请先选择词书")
     
     def _on_reset_today(self):
         """重置今日进度"""
