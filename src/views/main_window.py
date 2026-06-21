@@ -409,6 +409,14 @@ class MainWindow(QMainWindow):
         
         self.shortcut_5 = QShortcut(QKeySequence("5"), self)
         self.shortcut_5.activated.connect(lambda: self._on_review(5))
+        
+        # 拼写模式：Enter 提交
+        self.shortcut_enter = QShortcut(QKeySequence("Return"), self)
+        self.shortcut_enter.activated.connect(self._on_type_submit)
+        
+        # 拼写模式：Esc 取消（清空输入）
+        self.shortcut_esc = QShortcut(QKeySequence("Escape"), self)
+        self.shortcut_esc.activated.connect(self._on_type_cancel)
     
     def _load_settings(self):
         """加载设置"""
@@ -541,10 +549,10 @@ class MainWindow(QMainWindow):
         """显示拼写模式"""
         word = self.current_word
         
-        # 显示中文释义
+        # 显示中文释义（题目）
         self.type_question_label.setText(word.translation)
         
-        # 显示音标（提示）
+        # 显示音标（拼写提示）
         if self.settings.get('show_phonetic', True):
             phonetic = ""
             if word.us_phone:
@@ -567,6 +575,9 @@ class MainWindow(QMainWindow):
         # 隐藏结果
         self.type_result_label.hide()
         self.type_continue_btn.hide()
+        
+        # 重置状态
+        self.is_answer_shown = False
         
         # 禁用评分按钮
         self._set_review_buttons_enabled(False)
@@ -657,6 +668,12 @@ class MainWindow(QMainWindow):
             # 显示继续按钮
             self.type_continue_btn.show()
     
+    def _on_type_cancel(self):
+        """拼写模式取消输入"""
+        if self.card_stack.currentIndex() == 1:  # 拼写模式
+            self.type_input.clear()
+            self.type_input.setFocus()
+
     def _on_type_continue(self):
         """拼写错误后继续"""
         # 记录为"忘记" (quality=0)
