@@ -737,7 +737,24 @@ class MainWindow(QMainWindow):
     
     def _on_settings(self):
         """打开设置"""
-        QMessageBox.information(self, "提示", "设置功能开发中...")
+        from .settings_dialog import SettingsDialog
+        dialog = SettingsDialog(self)
+        if dialog.exec_():
+            # 设置已保存，刷新
+            self.settings = self._load_settings()
+            # 如果默认词书改变了，重新加载
+            default_book_id = db.get_setting('default_book_id', '')
+            if default_book_id and (not self.scheduler or self.scheduler.book_id != default_book_id):
+                from src.models.book import Book
+                book = Book.get_by_id(default_book_id)
+                if book:
+                    self.scheduler = Scheduler(book.book_id)
+                    self._update_info()
+                    self._load_today_queue()
+            else:
+                # 只是刷新当前
+                self._load_today_queue()
+            self.status_bar.showMessage("设置已更新")
     
     def _on_stats(self):
         """打开统计"""
