@@ -1,4 +1,4 @@
-# WordMemory - 背单词软件
+# WordMemory - 背单词软件 v1.0
 
 基于艾宾浩斯遗忘曲线，和SM-2算法的背单词工具
 (某天背单词的时候突然想到的)
@@ -13,3 +13,4 @@
 
 ## JSON词库来源
 [json来源](https://github.com/KyleBing/english-vocabulary)
+选择full版词库下载
